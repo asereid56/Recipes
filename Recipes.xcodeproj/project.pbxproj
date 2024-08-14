@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A7B85DA2C6D6D6D00232141 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 4A7B85D92C6D6D6D00232141 /* Reachability */; };
 		4ABA25C02C6CD5AA008E0B9F /* RecipeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ABA25BE2C6CD5AA008E0B9F /* RecipeTableViewCell.swift */; };
 		4ABA25C12C6CD5AA008E0B9F /* RecipeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABA25BF2C6CD5AA008E0B9F /* RecipeTableViewCell.xib */; };
 		4ABA25C52C6D00C1008E0B9F /* RecipeDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ABA25C42C6D00C1008E0B9F /* RecipeDetailsViewController.swift */; };
@@ -56,6 +57,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AED9D4C2C6CA830008D4D18 /* Kingfisher in Frameworks */,
+				4A7B85DA2C6D6D6D00232141 /* Reachability in Frameworks */,
 				4AED9D4F2C6CA84B008D4D18 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -174,7 +176,6 @@
 		4AED9D382C6BA7D6008D4D18 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				4AED9D392C6BA7DD008D4D18 /* Utils */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -200,6 +201,7 @@
 			isa = PBXGroup;
 			children = (
 				4AED9D402C6BA8BE008D4D18 /* NetworkService.swift */,
+				4AED9D392C6BA7DD008D4D18 /* Utils */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -251,6 +253,7 @@
 			packageProductDependencies = (
 				4AED9D4B2C6CA830008D4D18 /* Kingfisher */,
 				4AED9D4E2C6CA84B008D4D18 /* Alamofire */,
+				4A7B85D92C6D6D6D00232141 /* Reachability */,
 			);
 			productName = Recipes;
 			productReference = 4AED9D1B2C6BA62D008D4D18 /* Recipes.app */;
@@ -283,6 +286,7 @@
 			packageReferences = (
 				4AED9D4A2C6CA830008D4D18 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				4AED9D4D2C6CA84B008D4D18 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				4A7B85D82C6D6D6D00232141 /* XCRemoteSwiftPackageReference "Reachability.swift" */,
 			);
 			productRefGroup = 4AED9D1C2C6BA62D008D4D18 /* Products */;
 			projectDirPath = "";
@@ -547,6 +551,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4A7B85D82C6D6D6D00232141 /* XCRemoteSwiftPackageReference "Reachability.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		4AED9D4A2C6CA830008D4D18 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -566,6 +578,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4A7B85D92C6D6D6D00232141 /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A7B85D82C6D6D6D00232141 /* XCRemoteSwiftPackageReference "Reachability.swift" */;
+			productName = Reachability;
+		};
 		4AED9D4B2C6CA830008D4D18 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4AED9D4A2C6CA830008D4D18 /* XCRemoteSwiftPackageReference "Kingfisher" */;

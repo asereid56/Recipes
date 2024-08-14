@@ -111,10 +111,10 @@
             </objects>
             <point key="canvasLocation" x="791.16279069767438" y="-27.682403433476395"/>
         </scene>
-        <!--View Controller-->
+        <!--Recipe Details View Controller-->
         <scene sceneID="NTp-ci-xhd">
             <objects>
-                <viewController id="jwO-E3-Kok" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Details" id="jwO-E3-Kok" customClass="RecipeDetailsViewController" customModule="Recipes" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5tV-V0-Wuh">
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -125,14 +125,17 @@
                                 <buttonConfiguration key="configuration" style="filled" image="chevron.backward" catalog="system" cornerStyle="capsule">
                                     <color key="baseBackgroundColor" systemColor="systemPinkColor"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="backBtn:" destination="jwO-E3-Kok" eventType="touchUpInside" id="asf-JT-rXO"/>
+                                </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZoM-DS-8Gd">
-                                <rect key="frame" x="52" y="64" width="362" height="26"/>
-                                <fontDescription key="fontDescription" name="Cochin" family="Cochin" pointSize="22"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZoM-DS-8Gd">
+                                <rect key="frame" x="52" y="66.666666666666671" width="362" height="20.666666666666671"/>
+                                <fontDescription key="fontDescription" name="Cochin" family="Cochin" pointSize="18"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1bb-U7-5aD">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="200" translatesAutoresizingMaskIntoConstraints="NO" id="1bb-U7-5aD">
                                 <rect key="frame" x="16" y="111" width="398" height="390"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Calories/ Total Weight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dkJ-8E-ZM1">
@@ -142,19 +145,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T8t-kL-pok">
-                                <rect key="frame" x="16" y="686" width="398" height="23"/>
+                                <rect key="frame" x="16" y="666" width="398" height="23"/>
                                 <fontDescription key="fontDescription" name="Cochin" family="Cochin" pointSize="20"/>
                                 <color key="textColor" systemColor="systemPinkColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="235465/sds65d5454" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c35-gL-tmN">
-                                <rect key="frame" x="123.33333333333333" y="614" width="183.33333333333337" height="23"/>
+                                <rect key="frame" x="123.66666666666669" y="594" width="183" height="23"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="235465/sds65d5454" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G0L-OQ-2El">
-                                <rect key="frame" x="123.33333333333333" y="759" width="183.33333333333337" height="23"/>
+                                <rect key="frame" x="123.66666666666669" y="719" width="183" height="23"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -168,8 +171,8 @@
                             <constraint firstItem="yb5-LG-4g0" firstAttribute="height" secondItem="5tV-V0-Wuh" secondAttribute="height" multiplier="0.0386266" id="3zk-R9-YPi"/>
                             <constraint firstItem="G0L-OQ-2El" firstAttribute="centerX" secondItem="mwo-L9-wNT" secondAttribute="centerX" id="4Jg-uM-V8g"/>
                             <constraint firstItem="yb5-LG-4g0" firstAttribute="top" secondItem="mwo-L9-wNT" secondAttribute="top" id="4N7-Dc-UdQ"/>
-                            <constraint firstItem="G0L-OQ-2El" firstAttribute="top" secondItem="T8t-kL-pok" secondAttribute="bottom" constant="50" id="6T7-vL-93w"/>
-                            <constraint firstItem="c35-gL-tmN" firstAttribute="top" secondItem="dkJ-8E-ZM1" secondAttribute="bottom" constant="50" id="8eJ-Tf-Mrv"/>
+                            <constraint firstItem="G0L-OQ-2El" firstAttribute="top" secondItem="T8t-kL-pok" secondAttribute="bottom" constant="30" id="6T7-vL-93w"/>
+                            <constraint firstItem="c35-gL-tmN" firstAttribute="top" secondItem="dkJ-8E-ZM1" secondAttribute="bottom" constant="30" id="8eJ-Tf-Mrv"/>
                             <constraint firstItem="1bb-U7-5aD" firstAttribute="centerX" secondItem="mwo-L9-wNT" secondAttribute="centerX" id="8f0-Wh-HMJ"/>
                             <constraint firstItem="yb5-LG-4g0" firstAttribute="leading" secondItem="mwo-L9-wNT" secondAttribute="leading" constant="16" id="E1a-or-kb8"/>
                             <constraint firstItem="mwo-L9-wNT" firstAttribute="trailing" secondItem="ZoM-DS-8Gd" secondAttribute="trailing" constant="16" id="MNw-oh-mmB"/>
@@ -186,6 +189,12 @@
                             <constraint firstItem="ZoM-DS-8Gd" firstAttribute="leading" secondItem="yb5-LG-4g0" secondAttribute="trailing" id="x8O-B3-aZl"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="caloriesAndWeightTxt" destination="c35-gL-tmN" id="zBt-PS-OIh"/>
+                        <outlet property="recipeImage" destination="1bb-U7-5aD" id="0Uc-ht-gRN"/>
+                        <outlet property="recipeName" destination="ZoM-DS-8Gd" id="OTi-rH-JFI"/>
+                        <outlet property="totalTime" destination="G0L-OQ-2El" id="iTD-yd-Mcl"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HFt-jY-KBZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

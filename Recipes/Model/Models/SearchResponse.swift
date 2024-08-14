@@ -45,6 +45,10 @@ struct Next: Codable {
     let title: String?
 }
 
+struct RecipeResponse: Codable {
+    let recipe : Recipe?
+}
+
 
 // MARK: - Recipe
 struct Recipe: Codable {
@@ -87,8 +91,8 @@ struct Digest: Codable {
 
 // MARK: - Images
 struct Images: Codable {
-    let thumbnail, small, regular: Large
-    let large: Large?
+    let thumbnail, small, regular: Image?
+    let large: Image?
     
     enum CodingKeys: String, CodingKey {
         case thumbnail = "THUMBNAIL"
@@ -99,7 +103,7 @@ struct Images: Codable {
 }
 
 // MARK: - Large
-struct Large: Codable {
+struct Image: Codable {
     let url: String?
     let width, height: Int?
 }

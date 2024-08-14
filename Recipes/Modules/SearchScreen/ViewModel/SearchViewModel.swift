@@ -11,14 +11,15 @@ import Combine
 class SearchViewModel {
     private let networkService : NetworkServiceProtocol
     private var cancellables = Set<AnyCancellable>()
-    @Published var recipes: [Recipe] = []
+    @Published var recipes: [Hit] = []
+    private var nextURL: String?
     
     init(networkService: NetworkServiceProtocol) {
         self.networkService = networkService
     }
     
-    func fetchData(endpoint: String) {
-        networkService.get(endpoint: endpoint, url: Constant.baseURL).sink { completion in
+    func fetchData(endpoint: String, url: String) {
+        networkService.get(endpoint: endpoint, url: url).sink { completion in
             switch completion {
             case .finished:
                 break
@@ -27,9 +28,15 @@ class SearchViewModel {
                 self.recipes = []
             }
         } receiveValue: { (data: SearchResponse) in
-            self.recipes = data.hits?.compactMap { $0.recipe } ?? []
+            self.recipes.append(contentsOf: data.hits ?? [])
+            self.nextURL = data.links?.next.href
         }
         .store(in: &cancellables)
+    }
+    
+    func loadMoreData(){
+        guard let nextURL = nextURL else { return }
+        fetchData(endpoint: "", url: nextURL)
     }
     
     func makeAllURL(fields: [String]?, healths: [String]?) -> String {

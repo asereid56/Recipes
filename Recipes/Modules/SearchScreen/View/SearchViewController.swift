@@ -23,7 +23,6 @@ class SearchViewController: UIViewController {
     private var selectedCategorySubject = CurrentValueSubject<String?, Never>(nil)
     private var searchTextSubject = PassthroughSubject<String, Never>()
     private var cancellables = Set<AnyCancellable>()
-  //  private var isSubCategoryViewHidden = true
     private var subCategoryViewHeight: CGFloat = 0
     private var viewModel : SearchViewModel?
     
@@ -56,7 +55,7 @@ class SearchViewController: UIViewController {
                 if selectedCategory == "All" {
                     UIView.animate(withDuration: 2) {
                         self.subCategoryCollectionView.isHidden = true
-                           self.upperConstraintForTableView.constant = 4
+                        self.upperConstraintForTableView.constant = 4
                     }
                     
                 }else if selectedCategory == "Health" {
@@ -77,9 +76,13 @@ class SearchViewController: UIViewController {
             }.store(in: &cancellables)
         
         searchTextSubject
-            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
+            .throttle(for: .seconds(3), scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] query in
-                self?.viewModel?.fetchData(endpoint: (self?.viewModel?.makeAllURL(fields: ["label", "source", "image"], healths: []) ?? "") + "&q=\(query)")
+                guard let self = self else { return }
+                
+                if checkInternetAndShowToast(vc: self) {
+                    self.viewModel?.fetchData(endpoint: (self.viewModel?.makeAllURL(fields: ["label", "source", "image"], healths: []) ?? "") + "&q=\(query)", url: Constant.baseURL)
+                }
             }
             .store(in: &cancellables)
         
@@ -96,6 +99,7 @@ extension SearchViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
+
 extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -117,18 +121,40 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "recipeCell", for: indexPath) as! RecipeTableViewCell
         
-        if let recipe = viewModel?.recipes[indexPath.row] {
+        if let recipe = viewModel?.recipes[indexPath.row].recipe {
             cell.configure(with: recipe)
         }
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // Handle row selection if needed
+        if checkInternetAndShowToast(vc: self){
+            let detailsVM = DetailsRecipeViewModel(network: NetworkService())
+            detailsVM.url = viewModel?.recipes[indexPath.item].links?.linksSelf.href ?? ""
+            
+            if let detailsVC = storyboard?.instantiateViewController(identifier: "Details") as? RecipeDetailsViewController {
+                
+                detailsVC.viewModel = detailsVM
+                
+                self.navigationController?.pushViewController(detailsVC, animated: true)
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 141.33
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - frameHeight {
+            if checkInternetAndShowToast(vc: self){
+                viewModel?.loadMoreData()
+            }
+        }
     }
 }
 extension SearchViewController : UICollectionViewDataSource, UICollectionViewDelegate {
@@ -161,5 +187,5 @@ extension SearchViewController : UICollectionViewDataSource, UICollectionViewDel
             selectedCategorySubject.send(selectedCategory)
         }
     }
-
+    
 }

@@ -25,9 +25,7 @@ class RecipeTableViewCell: UITableViewCell {
         recipeSource.text = recipe.source
         
         if let imageUrl = recipe.image, let url = URL(string: imageUrl) {
-            recipeImage.kf.setImage(with: url)
-        } else {
-            recipeImage.image = UIImage(named: "placeholder")
+            recipeImage.kf.setImage(with: url , placeholder: UIImage(named: "placeholder"))
         }
     }
     

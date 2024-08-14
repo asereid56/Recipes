@@ -10,17 +10,13 @@ import Combine
 import Alamofire
 
 protocol NetworkServiceProtocol {
-    func get<T: Decodable>(endpoint: String, url: String?) -> AnyPublisher<T, Error>
+    func get<T: Decodable>(endpoint: String, url: String) -> AnyPublisher<T, Error>
 }
 class NetworkService: NetworkServiceProtocol {
-    func get<T>(endpoint: String, url: String? = Constant.baseURL) -> AnyPublisher<T, Error> where T : Decodable {
-        guard let url = url else {
-            print(url)
-            return Fail(error: URLError(.badURL)).eraseToAnyPublisher()
-        }
-        
+    func get<T>(endpoint: String, url: String) -> AnyPublisher<T, Error> where T : Decodable {
+            
         let fullUrl = url + endpoint
-        
+        print(fullUrl)
         return AF.request(fullUrl)
             .validate()
             .publishDecodable()
