@@ -176,6 +176,7 @@
 		4AED9D382C6BA7D6008D4D18 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				4AED9D392C6BA7DD008D4D18 /* Utils */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -201,7 +202,6 @@
 			isa = PBXGroup;
 			children = (
 				4AED9D402C6BA8BE008D4D18 /* NetworkService.swift */,
-				4AED9D392C6BA7DD008D4D18 /* Utils */,
 			);
 			path = Network;
 			sourceTree = "<group>";
