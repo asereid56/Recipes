@@ -26,6 +26,7 @@ class SearchViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private var selectedSubCategories: [String] = []
     private var latestQuery: String = ""
+    private var currentMainCategory: String = ""
     private var subCategoryViewHeight: CGFloat = 0
     private var viewModel : SearchViewModel?
     
@@ -55,35 +56,52 @@ class SearchViewController: UIViewController {
             .compactMap { $0 }
             .sink { [weak self] selectedCategory in
                 guard let self = self else { return }
-                if selectedCategory == "All" {
+                
+                let lowercasedCategory = selectedCategory.lowercased()
+                
+                switch lowercasedCategory {
+                case "all":
                     self.selectedSubCategories = []
+                    if !self.latestQuery.isEmpty {
+                        self.viewModel?.fetchData(endpoint: "&q=\(self.latestQuery)", url: Constant.baseURL)
+                    }
+                    self.animateCategoryView(hideSubCategoryView: true, tableViewConstant: 4)
                     self.mainCategoryCollectionView.reloadData()
-                    self.viewModel?.fetchData(endpoint: "&q=\(latestQuery)", url: Constant.baseURL)
-                    UIView.animate(withDuration: 2) {
-                        self.subCategoryCollectionView.isHidden = true
-                        self.upperConstraintForTableView.constant = 4
-                    }
                     
-                    
-                }else if selectedCategory == "Health" {
+                case "health":
                     self.subCategories = Constant.healthSubCategories
-                    UIView.animate(withDuration: 2) {
-                        self.subCategoryCollectionView.isHidden = false
-                        self.upperConstraintForTableView.constant = self.subCategoryViewHeight
-                    }
+                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
+                    
+                case "diet":
+                    self.subCategories = Constant.dietaryOptions
+                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
+                    
+                case "mealtype":
+                    self.subCategories = Constant.mealTypes
+                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
+                    
+                case "cuisinetype":
+                    self.subCategories = Constant.cuisines
+                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
+                    
+                default:
+                    break
                 }
+                
                 self.subCategoryCollectionView.reloadData()
             }
             .store(in: &cancellables)
         
         subCategorySubject
-            .throttle(for: .seconds(3), scheduler: DispatchQueue.main, latest: true)
+            .throttle(for: .seconds(2), scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in
                 guard let self = self else { return }
                 
                 if checkInternetAndShowToast(vc: self) {
-                    let endPoint = (self.viewModel?.makeAllURL(fields: ["label", "source", "image"], healths: self.selectedSubCategories) ?? "") + "&q=\(self.latestQuery)"
-                    self.viewModel?.fetchData(endpoint: endPoint, url: Constant.baseURL)
+                    if !self.latestQuery.isEmpty {
+                        let endPoint = (self.viewModel?.makeAllURL(filters: selectedSubCategories) ?? "") + "&q=\(self.latestQuery)"
+                        self.viewModel?.fetchData(endpoint: endPoint, url: Constant.baseURL)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -101,7 +119,7 @@ class SearchViewController: UIViewController {
                 
                 self.latestQuery = query
                 if checkInternetAndShowToast(vc: self) {
-                    self.viewModel?.fetchData(endpoint: (self.viewModel?.makeAllURL(fields: ["label", "source", "image"], healths: []) ?? "") + "&q=\(query)", url: Constant.baseURL)
+                    self.viewModel?.fetchData(endpoint: (self.viewModel?.makeAllURL(filters: selectedSubCategories) ?? "") + "&q=\(query)", url: Constant.baseURL)
                 }
             }
             .store(in: &cancellables)
@@ -109,7 +127,20 @@ class SearchViewController: UIViewController {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            latestQuery = ""
+            viewModel?.recipes = []
+            return
+        }
         searchTextSubject.send(searchText)
+    }
+    
+    private func animateCategoryView(hideSubCategoryView: Bool, tableViewConstant: CGFloat) {
+        UIView.animate(withDuration: 0.7) {
+            self.subCategoryCollectionView.isHidden = hideSubCategoryView
+            self.upperConstraintForTableView.constant = tableViewConstant
+            self.view.layoutIfNeeded()
+        }
     }
     
 }
@@ -119,8 +150,8 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let result = viewModel?.recipes.count ?? 0
         if result == 0 {
-            subCategoryCollectionView.isHidden = true
-            mainCategoryCollectionView.isHidden = true
+            subCategoryCollectionView.isHidden = false
+            mainCategoryCollectionView.isHidden = false
             tableView.isHidden = true
             emptyPhoto.isHidden = false
         }else{
@@ -162,20 +193,6 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         return 141.33
     }
     
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let offsetY = scrollView.contentOffset.y
-//        let contentHeight = scrollView.contentSize.height
-//        let frameHeight = scrollView.frame.size.height
-//        
-//        print("offSetY = \(offsetY)")
-//        print("contentHeight = \(contentHeight)")
-//        print("frameHeight = \(frameHeight)")
-//        if offsetY > contentHeight - frameHeight {
-//            if checkInternetAndShowToast(vc: self){
-//                viewModel?.loadMoreData()
-//            }
-//        }
-//    }
 }
 
 
@@ -193,12 +210,12 @@ extension SearchViewController : UICollectionViewDataSource, UICollectionViewDel
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "categoryCell", for: indexPath) as! CategoryCollectionViewCell
         
         if collectionView == mainCategoryCollectionView {
-            let category = Constant.mainCategories[indexPath.row]
-            cell.configure(with: category, isSelected: selectedSubCategories.contains(category))
+            let category = Constant.mainCategories[indexPath.row].capitalized
+            cell.configure(with: category, isSelected: selectedSubCategories.filter({ $0.lowercased().contains(category.lowercased())}).count > 0)
             
         }else if collectionView == subCategoryCollectionView {
             let subCategory = subCategories[indexPath.row].capitalized
-            cell.configure(with: subCategory, isSelected: selectedSubCategories.contains(subCategory))
+            cell.configure(with: subCategory, isSelected: selectedSubCategories.filter({ $0.lowercased().contains(subCategory.lowercased())}).count > 0)
         }
         
         return cell
@@ -209,24 +226,25 @@ extension SearchViewController : UICollectionViewDataSource, UICollectionViewDel
         
         if collectionView == mainCategoryCollectionView {
             selectedCategory = Constant.mainCategories[indexPath.row]
+            self.currentMainCategory = selectedCategory
             selectedCategorySubject.send(selectedCategory)
             
         }else if collectionView == subCategoryCollectionView {
             
             selectedCategory = subCategories[indexPath.row]
             
-            if let index = selectedSubCategories.firstIndex(of: selectedCategory){
-                selectedSubCategories.remove(at: index)
+            if selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 {
+                selectedSubCategories.removeAll {$0.contains(selectedCategory)}
             } else {
-                selectedSubCategories.append(selectedCategory)
+                selectedSubCategories.append("\(currentMainCategory)=\(selectedCategory)")
             }
             
             subCategorySubject.send(())
         }
         
         if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.layer.borderColor = (selectedSubCategories.contains(selectedCategory) || Constant.mainCategories.contains(selectedCategory)) ? UIColor.purple.cgColor : UIColor.clear.cgColor
-            cell.layer.borderWidth = (selectedSubCategories.contains(selectedCategory) || Constant.mainCategories.contains(selectedCategory)) ? 2 : 0
+            cell.layer.borderColor = (selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? UIColor.purple.cgColor : UIColor.clear.cgColor
+            cell.layer.borderWidth = (selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? 2 : 0
         }
     }
     

@@ -57,19 +57,10 @@ class SearchViewModel {
         .store(in: &cancellables)
     }
     
-    func makeAllURL(fields: [String]?, healths: [String]?) -> String {
-        var filedsResult: String = ""
-        var healthResult: String = ""
-        if let fields = fields {
-            for field in fields {
-                filedsResult += "&field=\(field)"
-            }
-        }
-        if let healths = healths {
-            for health in healths {
-                healthResult += "&health=\(health)"
-            }
-        }
-        return filedsResult + healthResult
+    func makeAllURL(filters: [String]) -> String {
+        guard !filters.isEmpty else { return "" }
+        
+        var filterResult: String = filters.joined(separator: "&")
+        return "&\(filterResult)"
     }
 }
