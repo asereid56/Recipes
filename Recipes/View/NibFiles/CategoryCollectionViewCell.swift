@@ -18,8 +18,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     func configure(with text: String, isSelected: Bool){
         categoryTxt.text = text
-        self.layer.borderColor = isSelected ? UIColor.purple.cgColor : UIColor.clear.cgColor
-        self.layer.borderWidth = isSelected ? 2 : 0
+        self.layer.borderColor = isSelected ? UIColor.cyan.cgColor : UIColor.clear.cgColor
+        self.layer.borderWidth = isSelected ? 3 : 0
     }
     
     private func setUpCellAppearance(){

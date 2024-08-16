@@ -70,22 +70,22 @@ class SearchViewController: UIViewController {
                     
                 case "health":
                     self.subCategories = Constant.healthSubCategories
-                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
                     
                 case "diet":
                     self.subCategories = Constant.dietaryOptions
-                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
                     
                 case "mealtype":
                     self.subCategories = Constant.mealTypes
-                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
                     
                 case "cuisinetype":
                     self.subCategories = Constant.cuisines
-                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
                     
                 default:
                     break
+                }
+                
+                if lowercasedCategory != "all" {
+                    self.animateCategoryView(hideSubCategoryView: false, tableViewConstant: self.subCategoryViewHeight)
                 }
                 
                 self.subCategoryCollectionView.reloadData()
@@ -150,13 +150,9 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let result = viewModel?.recipes.count ?? 0
         if result == 0 {
-            subCategoryCollectionView.isHidden = false
-            mainCategoryCollectionView.isHidden = false
             tableView.isHidden = true
             emptyPhoto.isHidden = false
         }else{
-            subCategoryCollectionView.isHidden = false
-            mainCategoryCollectionView.isHidden = false
             tableView.isHidden = false
             emptyPhoto.isHidden = true
         }
@@ -242,10 +238,17 @@ extension SearchViewController : UICollectionViewDataSource, UICollectionViewDel
             subCategorySubject.send(())
         }
         
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.layer.borderColor = (selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? UIColor.purple.cgColor : UIColor.clear.cgColor
-            cell.layer.borderWidth = (selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? 2 : 0
+        mainCategoryCollectionView.reloadData()
+        subCategoryCollectionView.reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+            
+            if let cell = collectionView.cellForItem(at: indexPath) {
+                cell.layer.borderColor = (self.selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? UIColor.cyan.cgColor : UIColor.clear.cgColor
+                cell.layer.borderWidth = (self.selectedSubCategories.filter({ $0.lowercased().contains(selectedCategory.lowercased())}).count > 0 || Constant.mainCategories.contains(selectedCategory)) ? 3 : 0
+            }
         }
+        
     }
     
 }

@@ -26,8 +26,8 @@ class DetailsRecipeViewModel {
             case .failure(let error):
                 print(error)
             }
-        } receiveValue: { (data: RecipeResponse) in
-            self.recipeDetails = data.recipe
+        } receiveValue: { [weak self](data: RecipeResponse) in
+            self?.recipeDetails = data.recipe
         }
         .store(in: &cancellables)
     }

@@ -13,7 +13,6 @@ class RecipeTableViewCell: UITableViewCell {
     @IBOutlet weak var recipeName: UILabel!
     @IBOutlet weak var recipeSource: UILabel!
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         recipeImage.layer.cornerRadius = 10
@@ -27,7 +26,5 @@ class RecipeTableViewCell: UITableViewCell {
         if let imageUrl = recipe.image, let url = URL(string: imageUrl) {
             recipeImage.kf.setImage(with: url , placeholder: UIImage(named: "placeholder"))
         }
-        
     }
-    
 }
